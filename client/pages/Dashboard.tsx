@@ -85,7 +85,7 @@ export default function Dashboard() {
   });
 
   // Fetch triggered alerts
-  const { data: triggeredAlertsResponse = { triggered_alerts: [] } } = useQuery({
+  const { data: triggeredAlertsResponse = { checked: 0, triggered_alerts: [] } } = useQuery({
     queryKey: ['triggered-alerts'],
     queryFn: async () => {
       const response = await alertsAPI.checkAlerts();
@@ -93,7 +93,7 @@ export default function Dashboard() {
     },
   });
 
-  const triggeredAlerts = triggeredAlertsResponse.triggered_alerts || [];
+  const triggeredAlerts = triggeredAlertsResponse.triggered_alerts || triggeredAlertsResponse.triggered || [];
 
   // Fetch top cryptos
   const { data: topCryptos = [] } = useQuery({
