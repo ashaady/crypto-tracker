@@ -74,10 +74,10 @@ export default function Dashboard() {
     queryFn: async () => {
       const response = await portfolioAPI.getDiversification();
       setDiversificationData(
-        response.diversification.map((item) => ({
-          name: item.symbol,
-          value: item.value_usd,
-          percentage: item.percentage,
+        (response?.diversification || []).map((item) => ({
+          name: item.symbol || 'Unknown',
+          value: item.value_usd ?? 0,
+          percentage: item.percentage ?? 0,
         }))
       );
       return response;
