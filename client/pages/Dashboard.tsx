@@ -130,9 +130,12 @@ export default function Dashboard() {
     if (!valuation || !valuation.assets || valuation.assets.length === 0) {
       return 0;
     }
-    const totalValue = valuation.total_value;
+    const totalValue = valuation.total_value ?? 0;
     const totalValueYesterday = valuation.assets.reduce((sum, asset) => {
-      return sum + (asset.value_usd / (1 + asset.percent_change_24h / 100));
+      const assetValue = asset.value_usd ?? 0;
+      const changePercent = asset.percent_change_24h ?? 0;
+      const yesterdayValue = changePercent === 0 ? assetValue : assetValue / (1 + changePercent / 100);
+      return sum + yesterdayValue;
     }, 0);
     if (totalValueYesterday === 0) return 0;
     return ((totalValue - totalValueYesterday) / totalValueYesterday) * 100;
