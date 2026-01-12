@@ -31,14 +31,14 @@ export default function History() {
   const { isLoading, refetch } = useQuery({
     queryKey: ['history', selectedDays],
     queryFn: async () => {
-      const data = await portfolioAPI.getHistory(selectedDays);
+      const response = await portfolioAPI.getHistory(selectedDays);
       setHistoryData(
-        data.map((point) => ({
+        response.data.map((point) => ({
           name: new Date(point.timestamp).toLocaleDateString(),
-          value: point.total_value,
+          value: point.value_usd,
         }))
       );
-      return data;
+      return response;
     },
     staleTime: 60000,
   });
