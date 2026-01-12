@@ -100,7 +100,8 @@ export const portfolioAPI = {
         data || {
           total_value: 0,
           currency,
-          change_24h: 0,
+          assets: [],
+          last_updated: new Date().toISOString(),
         }
       );
     } catch (error) {
@@ -108,7 +109,8 @@ export const portfolioAPI = {
       return {
         total_value: 0,
         currency,
-        change_24h: 0,
+        assets: [],
+        last_updated: new Date().toISOString(),
       };
     }
   },
