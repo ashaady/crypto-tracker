@@ -6,10 +6,9 @@ export interface TopCrypto {
   rank: number;
   name: string;
   symbol: string;
-  current_price: number;
-  change_24h: number;
+  price: number;
+  percent_change_24h: number;
   market_cap: number;
-  market_cap_usd?: number;
 }
 
 export const marketAPI = {
