@@ -28,10 +28,32 @@ export default function Portfolio() {
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null);
 
   // Fetch assets
-  const { data: assets = [], isLoading } = useQuery({
+  const { data: assets = [], isLoading: isLoadingAssets } = useQuery({
     queryKey: ['assets'],
     queryFn: portfolioAPI.getAssets,
     staleTime: 30000,
+  });
+
+  // Fetch valuation data for prices
+  const { data: valuation, isLoading: isLoadingValuation } = useQuery({
+    queryKey: ['valuation'],
+    queryFn: () => portfolioAPI.getValuation(),
+    staleTime: 30000,
+  });
+
+  const isLoading = isLoadingAssets || isLoadingValuation;
+
+  // Enrich assets with pricing data from valuation
+  const assetsWithPrices = assets.map((asset) => {
+    const valuationAsset = valuation?.assets?.find(
+      (v: any) => v.id === asset.id
+    );
+    return {
+      ...asset,
+      current_price: valuationAsset?.current_price,
+      total_value: valuationAsset?.value_usd,
+      change_24h: valuationAsset?.percent_change_24h,
+    };
   });
 
   const handleAddAsset = async (e: React.FormEvent) => {
