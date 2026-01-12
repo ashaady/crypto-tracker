@@ -360,7 +360,7 @@ export default function Dashboard() {
       </div>
 
       {/* Assets Summary */}
-      {assets.length > 0 && (
+      {assets.length > 0 && valuation && (
         <div className="bg-card rounded-lg p-6 border border-border">
           <h2 className="text-lg font-semibold text-foreground mb-4">
             Your Assets ({assets.length})
@@ -377,23 +377,26 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {assets.map((asset) => (
-                  <tr key={asset.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
-                    <td className="py-3 px-4 text-foreground font-medium">{asset.symbol}</td>
-                    <td className="text-right py-3 px-4 text-foreground">
-                      {asset.amount.toLocaleString('en-US', { maximumFractionDigits: 8 })}
-                    </td>
-                    <td className="text-right py-3 px-4 text-foreground">
-                      ${asset.current_price?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
-                    </td>
-                    <td className="text-right py-3 px-4 text-foreground">
-                      ${asset.total_value?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
-                    </td>
-                    <td className={`text-right py-3 px-4 font-medium ${(asset.change_24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {(asset.change_24h ?? 0) >= 0 ? '+' : ''}{(asset.change_24h ?? 0).toFixed(2)}%
-                    </td>
-                  </tr>
-                ))}
+                {assets.map((asset) => {
+                  const valuationAsset = valuation.assets?.find((v: any) => v.id === asset.id);
+                  return (
+                    <tr key={asset.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                      <td className="py-3 px-4 text-foreground font-medium">{asset.symbol}</td>
+                      <td className="text-right py-3 px-4 text-foreground">
+                        {asset.amount.toLocaleString('en-US', { maximumFractionDigits: 8 })}
+                      </td>
+                      <td className="text-right py-3 px-4 text-foreground">
+                        ${valuationAsset?.current_price?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
+                      </td>
+                      <td className="text-right py-3 px-4 text-foreground">
+                        ${valuationAsset?.value_usd?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
+                      </td>
+                      <td className={`text-right py-3 px-4 font-medium ${(valuationAsset?.percent_change_24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}`}>
+                        {(valuationAsset?.percent_change_24h ?? 0) >= 0 ? '+' : ''}{(valuationAsset?.percent_change_24h ?? 0).toFixed(2)}%
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
