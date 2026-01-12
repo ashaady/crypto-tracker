@@ -73,6 +73,6 @@ export const handleCheckAlerts: RequestHandler = (_req, res) => {
   // In production, this would fetch real prices from a market data API
   res.json({
     checked: alertsStorage.length,
-    triggered: [],
+    triggered_alerts: [],
   });
 };
