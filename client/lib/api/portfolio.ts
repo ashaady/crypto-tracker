@@ -127,15 +127,15 @@ export const portfolioAPI = {
   },
 
   // Get history
-  getHistory: async (days: number = 7): Promise<HistoryPoint[]> => {
+  getHistory: async (days: number = 7): Promise<HistoryResponse> => {
     try {
-      const data = await fetchAPI<HistoryPoint[]>(
+      const data = await fetchAPI<HistoryResponse>(
         `${API_BASE_URL}/portfolio/history?days=${days}`
       );
-      return data || [];
+      return data || { period_days: days, data_points: 0, percent_change: 0, data: [] };
     } catch (error) {
       console.error('Error fetching history:', error);
-      return [];
+      return { period_days: days, data_points: 0, percent_change: 0, data: [] };
     }
   },
 
