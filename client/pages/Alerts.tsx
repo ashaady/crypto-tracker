@@ -118,10 +118,11 @@ export default function Alerts() {
     try {
       const response = await alertsAPI.checkAlerts();
       queryClient.invalidateQueries({ queryKey: ['alerts'] });
-      if (response.triggered_alerts.length > 0) {
+      const triggeredCount = response.triggered_alerts?.length || response.triggered?.length || 0;
+      if (triggeredCount > 0) {
         toast({
           title: 'Alerts Triggered!',
-          description: `${response.triggered_alerts.length} alert(s) have been triggered`,
+          description: `${triggeredCount} alert(s) have been triggered`,
         });
       } else {
         toast({
