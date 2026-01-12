@@ -42,7 +42,14 @@ export interface DiversificationResponse {
 
 export interface HistoryPoint {
   timestamp: string;
-  total_value: number;
+  value_usd: number;
+}
+
+export interface HistoryResponse {
+  period_days: number;
+  data_points: number;
+  percent_change: number;
+  data: HistoryPoint[];
 }
 
 export const portfolioAPI = {
