@@ -12,7 +12,9 @@ export interface Alert {
 }
 
 export interface CheckAlertsResponse {
-  triggered_alerts: Alert[];
+  checked?: number;
+  triggered_alerts?: Alert[];
+  triggered?: Alert[];
 }
 
 export const alertsAPI = {
