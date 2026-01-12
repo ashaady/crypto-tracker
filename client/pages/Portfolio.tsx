@@ -211,7 +211,7 @@ export default function Portfolio() {
             <Loader className="w-6 h-6 animate-spin mx-auto mb-2" />
             Loading assets...
           </div>
-        ) : assets.length === 0 ? (
+        ) : assetsWithPrices.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-muted-foreground mb-4">
               No assets in your portfolio yet
@@ -234,7 +234,7 @@ export default function Portfolio() {
                 </tr>
               </thead>
               <tbody>
-                {assets.map((asset) => (
+                {assetsWithPrices.map((asset) => (
                   <tr
                     key={asset.id}
                     className="border-b border-border/50 hover:bg-muted/50 transition-colors"
