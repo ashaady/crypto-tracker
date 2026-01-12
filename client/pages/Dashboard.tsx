@@ -57,14 +57,14 @@ export default function Dashboard() {
   useQuery({
     queryKey: ['history', historyDays],
     queryFn: async () => {
-      const data = await portfolioAPI.getHistory(historyDays);
+      const response = await portfolioAPI.getHistory(historyDays);
       setHistoryData(
-        data.map((point) => ({
+        response.data.map((point) => ({
           name: new Date(point.timestamp).toLocaleDateString(),
-          value: point.total_value,
+          value: point.value_usd,
         }))
       );
-      return data;
+      return response;
     },
   });
 
