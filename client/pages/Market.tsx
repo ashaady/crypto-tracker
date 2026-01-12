@@ -112,56 +112,63 @@ export default function Market() {
                 </tr>
               </thead>
               <tbody>
-                {topCryptos.map((crypto, index) => (
-                  <tr
-                    key={crypto.symbol}
-                    className="border-b border-border/50 hover:bg-muted/50 transition-colors"
-                  >
-                    <td className="py-4 px-4 text-foreground font-medium">#{index + 1}</td>
-                    <td className="py-4 px-4">
-                      <div className="text-foreground font-semibold">{crypto.name}</div>
-                    </td>
-                    <td className="py-4 px-4 text-foreground font-medium">{crypto.symbol}</td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      ${crypto.current_price.toLocaleString('en-US', {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td
-                      className={`text-right py-4 px-4 font-semibold ${
-                        crypto.change_24h >= 0 ? 'text-success' : 'text-destructive'
-                      }`}
+                {topCryptos.map((crypto, index) => {
+                  const currentPrice = crypto.current_price ?? 0;
+                  const change24h = crypto.change_24h ?? 0;
+                  const marketCap = crypto.market_cap ?? 0;
+                  const name = crypto.name ?? 'Unknown';
+
+                  return (
+                    <tr
+                      key={crypto.symbol}
+                      className="border-b border-border/50 hover:bg-muted/50 transition-colors"
                     >
-                      {crypto.change_24h >= 0 ? '+' : ''}
-                      {crypto.change_24h.toFixed(2)}%
-                    </td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      ${crypto.market_cap.toLocaleString('en-US', {
-                        maximumFractionDigits: 0,
-                      })}
-                    </td>
-                    <td className="text-center py-4 px-4">
-                      <Button
-                        onClick={() => handleAddToPortfolio(crypto.symbol)}
-                        disabled={addingSymbols.has(crypto.symbol)}
-                        size="sm"
-                        className="flex items-center gap-2"
+                      <td className="py-4 px-4 text-foreground font-medium">#{index + 1}</td>
+                      <td className="py-4 px-4">
+                        <div className="text-foreground font-semibold">{name}</div>
+                      </td>
+                      <td className="py-4 px-4 text-foreground font-medium">{crypto.symbol}</td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        ${currentPrice.toLocaleString('en-US', {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td
+                        className={`text-right py-4 px-4 font-semibold ${
+                          change24h >= 0 ? 'text-success' : 'text-destructive'
+                        }`}
                       >
-                        {addingSymbols.has(crypto.symbol) ? (
-                          <>
-                            <Loader className="w-4 h-4 animate-spin" />
-                            Adding...
-                          </>
-                        ) : (
-                          <>
-                            <Plus className="w-4 h-4" />
-                            Add
-                          </>
-                        )}
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
+                        {change24h >= 0 ? '+' : ''}
+                        {change24h.toFixed(2)}%
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        ${marketCap.toLocaleString('en-US', {
+                          maximumFractionDigits: 0,
+                        })}
+                      </td>
+                      <td className="text-center py-4 px-4">
+                        <Button
+                          onClick={() => handleAddToPortfolio(crypto.symbol)}
+                          disabled={addingSymbols.has(crypto.symbol)}
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          {addingSymbols.has(crypto.symbol) ? (
+                            <>
+                              <Loader className="w-4 h-4 animate-spin" />
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-4 h-4" />
+                              Add
+                            </>
+                          )}
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
