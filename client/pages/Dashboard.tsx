@@ -438,15 +438,15 @@ export default function Dashboard() {
                     </td>
                     <td className="text-right py-3 px-4 text-foreground">
                       $
-                      {(crypto.current_price ?? 0).toLocaleString("en-US", {
+                      {(crypto.price ?? 0).toLocaleString("en-US", {
                         maximumFractionDigits: 2,
                       })}
                     </td>
                     <td
-                      className={`text-right py-3 px-4 font-medium ${(crypto.change_24h ?? 0) >= 0 ? "text-success" : "text-destructive"}`}
+                      className={`text-right py-3 px-4 font-medium ${(crypto.percent_change_24h ?? 0) >= 0 ? "text-success" : "text-destructive"}`}
                     >
-                      {(crypto.change_24h ?? 0) >= 0 ? "+" : ""}
-                      {(crypto.change_24h ?? 0).toFixed(2)}%
+                      {(crypto.percent_change_24h ?? 0) >= 0 ? "+" : ""}
+                      {(crypto.percent_change_24h ?? 0).toFixed(2)}%
                     </td>
                     <td className="text-right py-3 px-4 text-foreground">
                       $
