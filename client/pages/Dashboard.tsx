@@ -59,9 +59,9 @@ export default function Dashboard() {
     queryFn: async () => {
       const response = await portfolioAPI.getHistory(historyDays);
       setHistoryData(
-        response.data.map((point) => ({
+        (response?.data || []).map((point) => ({
           name: new Date(point.timestamp).toLocaleDateString(),
-          value: point.value_usd,
+          value: point.value_usd ?? 0,
         }))
       );
       return response;
