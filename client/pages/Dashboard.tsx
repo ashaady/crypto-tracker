@@ -182,8 +182,8 @@ export default function Dashboard() {
               {triggeredAlerts.length} Alert{triggeredAlerts.length !== 1 ? 's' : ''} Triggered
             </h3>
             <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-              {triggeredAlerts.map((alert) => (
-                <li key={alert.id}>
+              {triggeredAlerts.map((alert: any) => (
+                <li key={alert.alert_id || alert.id}>
                   {alert.symbol} reached ${alert.target_price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                 </li>
               ))}
