@@ -246,47 +246,53 @@ export default function Alerts() {
           </div>
         ) : (
           <div className="space-y-3">
-            {alerts.map((alert) => (
-              <div
-                key={alert.id}
-                className="flex items-center justify-between p-4 rounded-lg border border-border bg-muted/50 hover:border-primary/50 transition-colors"
-              >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-foreground font-semibold">{alert.symbol}</h3>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full font-medium ${
-                            alert.status === 'active'
-                              ? 'bg-success/20 text-success'
-                              : 'bg-warning/20 text-warning'
-                          }`}
-                        >
-                          {alert.status === 'active' ? '🟢 Active' : '🟡 Triggered'}
-                        </span>
+            {alerts.map((alert) => {
+              const targetPrice = alert.target_price ?? 0;
+              const condition = alert.condition ?? 'above';
+              const status = alert.status ?? 'active';
+
+              return (
+                <div
+                  key={alert.id}
+                  className="flex items-center justify-between p-4 rounded-lg border border-border bg-muted/50 hover:border-primary/50 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-foreground font-semibold">{alert.symbol}</h3>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full font-medium ${
+                              status === 'active'
+                                ? 'bg-success/20 text-success'
+                                : 'bg-warning/20 text-warning'
+                            }`}
+                          >
+                            {status === 'active' ? '🟢 Active' : '🟡 Triggered'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Alert when price goes{' '}
+                          <span className="font-medium text-foreground">
+                            {condition === 'above' ? 'above' : 'below'}
+                          </span>{' '}
+                          ${targetPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Created: {new Date(alert.created_at).toLocaleDateString()}
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Alert when price goes{' '}
-                        <span className="font-medium text-foreground">
-                          {alert.condition === 'above' ? 'above' : 'below'}
-                        </span>{' '}
-                        ${alert.target_price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Created: {new Date(alert.created_at).toLocaleDateString()}
-                      </p>
                     </div>
                   </div>
+                  <button
+                    onClick={() => setDeleteId(alert.id)}
+                    className="text-destructive hover:text-destructive/80 transition-colors ml-4"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => setDeleteId(alert.id)}
-                  className="text-destructive hover:text-destructive/80 transition-colors ml-4"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
