@@ -63,9 +63,7 @@ const mockPrices: Record<string, { price: number; change_24h: number }> = {
   ATOM: { price: 12.5, change_24h: 1.9 },
 };
 
-function getMockPrice(
-  symbol: string
-): { price: number; change_24h: number } {
+function getMockPrice(symbol: string): { price: number; change_24h: number } {
   return (
     mockPrices[symbol.toUpperCase()] || {
       price: Math.random() * 50000,
@@ -158,15 +156,16 @@ export const handleGetDiversification: RequestHandler = (_req, res) => {
     };
   });
 
-  const total_value_usd = assets.reduce((sum, asset) => sum + asset.value_usd, 0);
+  const total_value_usd = assets.reduce(
+    (sum, asset) => sum + asset.value_usd,
+    0,
+  );
 
   const diversification: DiversificationItem[] = assets.map((asset) => ({
     symbol: asset.symbol,
     value_usd: asset.value_usd,
     percentage:
-      total_value_usd > 0
-        ? (asset.value_usd / total_value_usd) * 100
-        : 0,
+      total_value_usd > 0 ? (asset.value_usd / total_value_usd) * 100 : 0,
   }));
 
   const response: DiversificationResponse = {

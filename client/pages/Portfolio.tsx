@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { portfolioAPI, Asset } from '@/lib/api/portfolio';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2, Plus, Loader } from 'lucide-react';
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { portfolioAPI, Asset } from "@/lib/api/portfolio";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { Trash2, Plus, Loader } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,30 +13,41 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 
-const POPULAR_CRYPTOS = ['BTC', 'ETH', 'ADA', 'SOL', 'XRP', 'DOT', 'DOGE', 'LINK', 'MATIC', 'ATOM'];
+const POPULAR_CRYPTOS = [
+  "BTC",
+  "ETH",
+  "ADA",
+  "SOL",
+  "XRP",
+  "DOT",
+  "DOGE",
+  "LINK",
+  "MATIC",
+  "ATOM",
+];
 
 export default function Portfolio() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [symbol, setSymbol] = useState('');
-  const [amount, setAmount] = useState('');
+  const [symbol, setSymbol] = useState("");
+  const [amount, setAmount] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null);
 
   // Fetch assets
   const { data: assets = [], isLoading: isLoadingAssets } = useQuery({
-    queryKey: ['assets'],
+    queryKey: ["assets"],
     queryFn: portfolioAPI.getAssets,
     staleTime: 30000,
   });
 
   // Fetch valuation data for prices
   const { data: valuation, isLoading: isLoadingValuation } = useQuery({
-    queryKey: ['valuation'],
+    queryKey: ["valuation"],
     queryFn: () => portfolioAPI.getValuation(),
     staleTime: 30000,
   });
@@ -46,7 +57,7 @@ export default function Portfolio() {
   // Enrich assets with pricing data from valuation
   const assetsWithPrices = assets.map((asset) => {
     const valuationAsset = valuation?.assets?.find(
-      (v: any) => v.id === asset.id
+      (v: any) => v.id === asset.id,
     );
     return {
       ...asset,
@@ -60,9 +71,9 @@ export default function Portfolio() {
     e.preventDefault();
     if (!symbol.trim() || !amount.trim()) {
       toast({
-        title: 'Validation Error',
-        description: 'Please fill in all fields',
-        variant: 'destructive',
+        title: "Validation Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
       });
       return;
     }
@@ -70,9 +81,9 @@ export default function Portfolio() {
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       toast({
-        title: 'Validation Error',
-        description: 'Amount must be a positive number',
-        variant: 'destructive',
+        title: "Validation Error",
+        description: "Amount must be a positive number",
+        variant: "destructive",
       });
       return;
     }
@@ -80,20 +91,20 @@ export default function Portfolio() {
     setIsAdding(true);
     try {
       await portfolioAPI.addAsset(symbol.toUpperCase(), parsedAmount);
-      queryClient.invalidateQueries({ queryKey: ['assets'] });
-      queryClient.invalidateQueries({ queryKey: ['valuation'] });
-      queryClient.invalidateQueries({ queryKey: ['diversification'] });
-      setSymbol('');
-      setAmount('');
+      queryClient.invalidateQueries({ queryKey: ["assets"] });
+      queryClient.invalidateQueries({ queryKey: ["valuation"] });
+      queryClient.invalidateQueries({ queryKey: ["diversification"] });
+      setSymbol("");
+      setAmount("");
       toast({
-        title: 'Success',
+        title: "Success",
         description: `Added ${symbol.toUpperCase()} to your portfolio`,
       });
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to add asset',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to add asset",
+        variant: "destructive",
       });
     } finally {
       setIsAdding(false);
@@ -104,19 +115,19 @@ export default function Portfolio() {
     setIsDeletingId(assetId);
     try {
       await portfolioAPI.deleteAsset(assetId);
-      queryClient.invalidateQueries({ queryKey: ['assets'] });
-      queryClient.invalidateQueries({ queryKey: ['valuation'] });
-      queryClient.invalidateQueries({ queryKey: ['diversification'] });
+      queryClient.invalidateQueries({ queryKey: ["assets"] });
+      queryClient.invalidateQueries({ queryKey: ["valuation"] });
+      queryClient.invalidateQueries({ queryKey: ["diversification"] });
       setDeleteId(null);
       toast({
-        title: 'Success',
-        description: 'Asset removed from portfolio',
+        title: "Success",
+        description: "Asset removed from portfolio",
       });
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to delete asset',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to delete asset",
+        variant: "destructive",
       });
     } finally {
       setIsDeletingId(null);
@@ -128,12 +139,16 @@ export default function Portfolio() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold text-foreground">Portfolio</h1>
-        <p className="text-muted-foreground mt-2">Manage your cryptocurrency assets</p>
+        <p className="text-muted-foreground mt-2">
+          Manage your cryptocurrency assets
+        </p>
       </div>
 
       {/* Add Asset Form */}
       <div className="bg-card rounded-lg p-6 border border-border">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Add New Asset</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          Add New Asset
+        </h2>
         <form onSubmit={handleAddAsset} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -173,7 +188,11 @@ export default function Portfolio() {
                 disabled={isAdding}
                 className="w-full flex items-center justify-center gap-2"
               >
-                {isAdding ? <Loader className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {isAdding ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Plus className="w-4 h-4" />
+                )}
                 Add Asset
               </Button>
             </div>
@@ -225,12 +244,24 @@ export default function Portfolio() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Symbol</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Amount</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Current Price</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Total Value</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">24h Change</th>
-                  <th className="text-center py-3 px-4 font-medium text-muted-foreground">Action</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
+                    Symbol
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    Amount
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    Current Price
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    Total Value
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    24h Change
+                  </th>
+                  <th className="text-center py-3 px-4 font-medium text-muted-foreground">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -247,22 +278,32 @@ export default function Portfolio() {
                     >
                       <td className="py-4 px-4">
                         <div>
-                          <div className="text-foreground font-semibold">{asset.symbol}</div>
+                          <div className="text-foreground font-semibold">
+                            {asset.symbol}
+                          </div>
                         </div>
                       </td>
                       <td className="text-right py-4 px-4 text-foreground">
-                        {amount.toLocaleString('en-US', {
+                        {amount.toLocaleString("en-US", {
                           maximumFractionDigits: 8,
                         })}
                       </td>
                       <td className="text-right py-4 px-4 text-foreground">
-                        ${currentPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        $
+                        {currentPrice.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
                       <td className="text-right py-4 px-4 text-foreground font-semibold">
-                        ${totalValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        $
+                        {totalValue.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
-                      <td className={`text-right py-4 px-4 font-semibold ${change24h >= 0 ? 'text-success' : 'text-destructive'}`}>
-                        {change24h >= 0 ? '+' : ''}
+                      <td
+                        className={`text-right py-4 px-4 font-semibold ${change24h >= 0 ? "text-success" : "text-destructive"}`}
+                      >
+                        {change24h >= 0 ? "+" : ""}
                         {change24h.toFixed(2)}%
                       </td>
                       <td className="py-4 px-4 text-center">
@@ -283,12 +324,16 @@ export default function Portfolio() {
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+      <AlertDialog
+        open={deleteId !== null}
+        onOpenChange={() => setDeleteId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Asset</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove this asset from your portfolio? This action cannot be undone.
+              Are you sure you want to remove this asset from your portfolio?
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex gap-3">
@@ -298,7 +343,7 @@ export default function Portfolio() {
               disabled={isDeletingId !== null}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeletingId === deleteId ? 'Deleting...' : 'Delete'}
+              {isDeletingId === deleteId ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>
