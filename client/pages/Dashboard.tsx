@@ -346,21 +346,21 @@ export default function Dashboard() {
               <tbody>
                 {topCryptos.map((crypto) => (
                   <tr key={crypto.symbol} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
-                    <td className="py-3 px-4 text-foreground">{crypto.rank}</td>
+                    <td className="py-3 px-4 text-foreground">{crypto.rank ?? 'N/A'}</td>
                     <td className="py-3 px-4">
                       <div>
-                        <div className="text-foreground font-medium">{crypto.name}</div>
+                        <div className="text-foreground font-medium">{crypto.name ?? 'Unknown'}</div>
                         <div className="text-muted-foreground text-xs">{crypto.symbol}</div>
                       </div>
                     </td>
                     <td className="text-right py-3 px-4 text-foreground">
-                      ${crypto.current_price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                      ${(crypto.current_price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 2 })}
                     </td>
-                    <td className={`text-right py-3 px-4 font-medium ${crypto.change_24h >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {crypto.change_24h >= 0 ? '+' : ''}{crypto.change_24h.toFixed(2)}%
+                    <td className={`text-right py-3 px-4 font-medium ${(crypto.change_24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}`}>
+                      {(crypto.change_24h ?? 0) >= 0 ? '+' : ''}{(crypto.change_24h ?? 0).toFixed(2)}%
                     </td>
                     <td className="text-right py-3 px-4 text-foreground">
-                      ${crypto.market_cap.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                      ${(crypto.market_cap ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                     </td>
                   </tr>
                 ))}
