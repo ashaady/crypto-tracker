@@ -393,21 +393,26 @@ export default function Dashboard() {
               </thead>
               <tbody>
                 {assets.map((asset) => {
-                  const valuationAsset = valuation.assets?.find((v: any) => v.id === asset.id);
+                  const valuationAsset = valuation?.assets?.find((v: any) => v.id === asset.id);
+                  const amount = asset.amount ?? 0;
+                  const currentPrice = valuationAsset?.current_price ?? 0;
+                  const totalValue = valuationAsset?.value_usd ?? 0;
+                  const change24h = valuationAsset?.percent_change_24h ?? 0;
+
                   return (
                     <tr key={asset.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
                       <td className="py-3 px-4 text-foreground font-medium">{asset.symbol}</td>
                       <td className="text-right py-3 px-4 text-foreground">
-                        {asset.amount.toLocaleString('en-US', { maximumFractionDigits: 8 })}
+                        {amount.toLocaleString('en-US', { maximumFractionDigits: 8 })}
                       </td>
                       <td className="text-right py-3 px-4 text-foreground">
-                        ${valuationAsset?.current_price?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
+                        ${currentPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                       </td>
                       <td className="text-right py-3 px-4 text-foreground">
-                        ${valuationAsset?.value_usd?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
+                        ${totalValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                       </td>
-                      <td className={`text-right py-3 px-4 font-medium ${(valuationAsset?.percent_change_24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                        {(valuationAsset?.percent_change_24h ?? 0) >= 0 ? '+' : ''}{(valuationAsset?.percent_change_24h ?? 0).toFixed(2)}%
+                      <td className={`text-right py-3 px-4 font-medium ${change24h >= 0 ? 'text-success' : 'text-destructive'}`}>
+                        {change24h >= 0 ? '+' : ''}{change24h.toFixed(2)}%
                       </td>
                     </tr>
                   );
