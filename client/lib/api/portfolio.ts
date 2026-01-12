@@ -11,10 +11,22 @@ export interface Asset {
   change_24h?: number;
 }
 
+export interface ValuationAsset {
+  id: number;
+  symbol: string;
+  amount: number;
+  current_price: number;
+  value_usd: number;
+  percent_change_24h: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ValuationResponse {
   total_value: number;
   currency: string;
-  change_24h?: number;
+  assets: ValuationAsset[];
+  last_updated: string;
 }
 
 export interface DiversificationItem {
