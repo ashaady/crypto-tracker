@@ -125,6 +125,21 @@ export default function Dashboard() {
     }
   };
 
+  // Calculate portfolio 24h change from assets
+  const calculate24hChange = () => {
+    if (!valuation || !valuation.assets || valuation.assets.length === 0) {
+      return 0;
+    }
+    const totalValue = valuation.total_value;
+    const totalValueYesterday = valuation.assets.reduce((sum, asset) => {
+      return sum + (asset.value_usd / (1 + asset.percent_change_24h / 100));
+    }, 0);
+    if (totalValueYesterday === 0) return 0;
+    return ((totalValue - totalValueYesterday) / totalValueYesterday) * 100;
+  };
+
+  const change24h = calculate24hChange();
+
   return (
     <div className="space-y-8">
       {/* Header */}
