@@ -234,41 +234,48 @@ export default function Portfolio() {
                 </tr>
               </thead>
               <tbody>
-                {assetsWithPrices.map((asset) => (
-                  <tr
-                    key={asset.id}
-                    className="border-b border-border/50 hover:bg-muted/50 transition-colors"
-                  >
-                    <td className="py-4 px-4">
-                      <div>
-                        <div className="text-foreground font-semibold">{asset.symbol}</div>
-                      </div>
-                    </td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      {asset.amount.toLocaleString('en-US', {
-                        maximumFractionDigits: 8,
-                      })}
-                    </td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      ${asset.current_price?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
-                    </td>
-                    <td className="text-right py-4 px-4 text-foreground font-semibold">
-                      ${asset.total_value?.toLocaleString('en-US', { maximumFractionDigits: 2 }) ?? 'N/A'}
-                    </td>
-                    <td className={`text-right py-4 px-4 font-semibold ${(asset.change_24h ?? 0) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {(asset.change_24h ?? 0) >= 0 ? '+' : ''}
-                      {(asset.change_24h ?? 0).toFixed(2)}%
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      <button
-                        onClick={() => setDeleteId(asset.id)}
-                        className="text-destructive hover:text-destructive/80 transition-colors inline-flex items-center justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {assetsWithPrices.map((asset) => {
+                  const amount = asset.amount ?? 0;
+                  const currentPrice = asset.current_price ?? 0;
+                  const totalValue = asset.total_value ?? 0;
+                  const change24h = asset.change_24h ?? 0;
+
+                  return (
+                    <tr
+                      key={asset.id}
+                      className="border-b border-border/50 hover:bg-muted/50 transition-colors"
+                    >
+                      <td className="py-4 px-4">
+                        <div>
+                          <div className="text-foreground font-semibold">{asset.symbol}</div>
+                        </div>
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        {amount.toLocaleString('en-US', {
+                          maximumFractionDigits: 8,
+                        })}
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        ${currentPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground font-semibold">
+                        ${totalValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                      </td>
+                      <td className={`text-right py-4 px-4 font-semibold ${change24h >= 0 ? 'text-success' : 'text-destructive'}`}>
+                        {change24h >= 0 ? '+' : ''}
+                        {change24h.toFixed(2)}%
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <button
+                          onClick={() => setDeleteId(asset.id)}
+                          className="text-destructive hover:text-destructive/80 transition-colors inline-flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
