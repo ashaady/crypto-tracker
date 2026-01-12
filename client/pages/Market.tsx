@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { marketAPI } from '@/lib/api/market';
-import { portfolioAPI } from '@/lib/api/portfolio';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { Plus, Loader, TrendingUp } from 'lucide-react';
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { marketAPI } from "@/lib/api/market";
+import { portfolioAPI } from "@/lib/api/portfolio";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Loader, TrendingUp } from "lucide-react";
 
 export default function Market() {
   const { toast } = useToast();
@@ -14,7 +14,7 @@ export default function Market() {
 
   // Fetch top cryptos
   const { data: topCryptos = [], isLoading } = useQuery({
-    queryKey: ['top-cryptos', limit],
+    queryKey: ["top-cryptos", limit],
     queryFn: () => marketAPI.getTopCryptos(limit),
     staleTime: 60000,
   });
@@ -23,18 +23,18 @@ export default function Market() {
     try {
       setAddingSymbols((prev) => new Set(prev).add(symbol));
       await portfolioAPI.addAsset(symbol, 1);
-      queryClient.invalidateQueries({ queryKey: ['assets'] });
-      queryClient.invalidateQueries({ queryKey: ['valuation'] });
-      queryClient.invalidateQueries({ queryKey: ['diversification'] });
+      queryClient.invalidateQueries({ queryKey: ["assets"] });
+      queryClient.invalidateQueries({ queryKey: ["valuation"] });
+      queryClient.invalidateQueries({ queryKey: ["diversification"] });
       toast({
-        title: 'Success',
+        title: "Success",
         description: `Added 1 ${symbol} to your portfolio. Edit the amount in your Portfolio page.`,
       });
     } catch (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: `Failed to add ${symbol}. It may already be in your portfolio.`,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setAddingSymbols((prev) => {
@@ -69,8 +69,8 @@ export default function Market() {
                   onClick={() => setLimit(count)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     limit === count
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground hover:bg-muted/80'
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground hover:bg-muted/80"
                   }`}
                 >
                   Top {count}
@@ -102,66 +102,95 @@ export default function Market() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Rank</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Name</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Symbol</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Price</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">24h Change</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Market Cap</th>
-                  <th className="text-center py-3 px-4 font-medium text-muted-foreground">Action</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
+                    Rank
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
+                    Name
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
+                    Symbol
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    Price
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    24h Change
+                  </th>
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                    Market Cap
+                  </th>
+                  <th className="text-center py-3 px-4 font-medium text-muted-foreground">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {topCryptos.map((crypto, index) => (
-                  <tr
-                    key={crypto.symbol}
-                    className="border-b border-border/50 hover:bg-muted/50 transition-colors"
-                  >
-                    <td className="py-4 px-4 text-foreground font-medium">#{index + 1}</td>
-                    <td className="py-4 px-4">
-                      <div className="text-foreground font-semibold">{crypto.name}</div>
-                    </td>
-                    <td className="py-4 px-4 text-foreground font-medium">{crypto.symbol}</td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      ${crypto.current_price.toLocaleString('en-US', {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td
-                      className={`text-right py-4 px-4 font-semibold ${
-                        crypto.change_24h >= 0 ? 'text-success' : 'text-destructive'
-                      }`}
+                {topCryptos.map((crypto, index) => {
+                  const currentPrice = crypto.current_price ?? 0;
+                  const change24h = crypto.change_24h ?? 0;
+                  const marketCap = crypto.market_cap ?? 0;
+                  const name = crypto.name ?? "Unknown";
+
+                  return (
+                    <tr
+                      key={crypto.symbol}
+                      className="border-b border-border/50 hover:bg-muted/50 transition-colors"
                     >
-                      {crypto.change_24h >= 0 ? '+' : ''}
-                      {crypto.change_24h.toFixed(2)}%
-                    </td>
-                    <td className="text-right py-4 px-4 text-foreground">
-                      ${crypto.market_cap.toLocaleString('en-US', {
-                        maximumFractionDigits: 0,
-                      })}
-                    </td>
-                    <td className="text-center py-4 px-4">
-                      <Button
-                        onClick={() => handleAddToPortfolio(crypto.symbol)}
-                        disabled={addingSymbols.has(crypto.symbol)}
-                        size="sm"
-                        className="flex items-center gap-2"
+                      <td className="py-4 px-4 text-foreground font-medium">
+                        #{index + 1}
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="text-foreground font-semibold">
+                          {name}
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-foreground font-medium">
+                        {crypto.symbol}
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        $
+                        {currentPrice.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td
+                        className={`text-right py-4 px-4 font-semibold ${
+                          change24h >= 0 ? "text-success" : "text-destructive"
+                        }`}
                       >
-                        {addingSymbols.has(crypto.symbol) ? (
-                          <>
-                            <Loader className="w-4 h-4 animate-spin" />
-                            Adding...
-                          </>
-                        ) : (
-                          <>
-                            <Plus className="w-4 h-4" />
-                            Add
-                          </>
-                        )}
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
+                        {change24h >= 0 ? "+" : ""}
+                        {change24h.toFixed(2)}%
+                      </td>
+                      <td className="text-right py-4 px-4 text-foreground">
+                        $
+                        {marketCap.toLocaleString("en-US", {
+                          maximumFractionDigits: 0,
+                        })}
+                      </td>
+                      <td className="text-center py-4 px-4">
+                        <Button
+                          onClick={() => handleAddToPortfolio(crypto.symbol)}
+                          disabled={addingSymbols.has(crypto.symbol)}
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          {addingSymbols.has(crypto.symbol) ? (
+                            <>
+                              <Loader className="w-4 h-4 animate-spin" />
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-4 h-4" />
+                              Add
+                            </>
+                          )}
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -173,11 +202,11 @@ export default function Market() {
         <div className="flex gap-3">
           <TrendingUp className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-foreground">
-              Quick Add Feature
-            </h3>
+            <h3 className="font-semibold text-foreground">Quick Add Feature</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Click the "Add" button to quickly add a cryptocurrency to your portfolio with an initial amount of 1 unit. You can edit the amount in your Portfolio page.
+              Click the "Add" button to quickly add a cryptocurrency to your
+              portfolio with an initial amount of 1 unit. You can edit the
+              amount in your Portfolio page.
             </p>
           </div>
         </div>

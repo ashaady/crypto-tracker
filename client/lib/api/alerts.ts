@@ -1,18 +1,20 @@
-import { fetchAPI } from './fetch-helper';
+import { fetchAPI } from "./fetch-helper";
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = "/api";
 
 export interface Alert {
   id: number;
   symbol: string;
   target_price: number;
-  condition: 'above' | 'below';
-  status: 'active' | 'triggered';
+  condition: "above" | "below";
+  status: "active" | "triggered";
   created_at: string;
 }
 
 export interface CheckAlertsResponse {
-  triggered_alerts: Alert[];
+  checked?: number;
+  triggered_alerts?: Alert[];
+  triggered?: Alert[];
 }
 
 export const alertsAPI = {
@@ -25,7 +27,7 @@ export const alertsAPI = {
       const data = await fetchAPI<Alert[]>(url);
       return data || [];
     } catch (error) {
-      console.error('Error fetching alerts:', error);
+      console.error("Error fetching alerts:", error);
       return [];
     }
   },
@@ -34,11 +36,11 @@ export const alertsAPI = {
   createAlert: async (
     symbol: string,
     targetPrice: number,
-    condition: 'above' | 'below'
+    condition: "above" | "below",
   ): Promise<Alert> => {
     const data = await fetchAPI<Alert>(`${API_BASE_URL}/alerts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         symbol,
         target_price: targetPrice,
@@ -53,11 +55,11 @@ export const alertsAPI = {
     try {
       const data = await fetchAPI<{ success: boolean }>(
         `${API_BASE_URL}/alerts/${alertId}`,
-        { method: 'DELETE' }
+        { method: "DELETE" },
       );
       return data || { success: true };
     } catch (error) {
-      console.error('Error deleting alert:', error);
+      console.error("Error deleting alert:", error);
       throw error;
     }
   },
@@ -67,11 +69,11 @@ export const alertsAPI = {
     try {
       const data = await fetchAPI<CheckAlertsResponse>(
         `${API_BASE_URL}/alerts/check`,
-        { method: 'POST' }
+        { method: "POST" },
       );
       return data || { triggered_alerts: [] };
     } catch (error) {
-      console.error('Error checking alerts:', error);
+      console.error("Error checking alerts:", error);
       return { triggered_alerts: [] };
     }
   },

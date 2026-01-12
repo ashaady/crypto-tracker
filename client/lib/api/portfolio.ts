@@ -1,6 +1,6 @@
-import { fetchAPI } from './fetch-helper';
+import { fetchAPI } from "./fetch-helper";
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = "/api";
 
 export interface Asset {
   id: number;
@@ -11,21 +11,45 @@ export interface Asset {
   change_24h?: number;
 }
 
+export interface ValuationAsset {
+  id: number;
+  symbol: string;
+  amount: number;
+  current_price: number;
+  value_usd: number;
+  percent_change_24h: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ValuationResponse {
   total_value: number;
   currency: string;
-  change_24h?: number;
+  assets: ValuationAsset[];
+  last_updated: string;
 }
 
 export interface DiversificationItem {
   symbol: string;
   percentage: number;
-  value: number;
+  value_usd: number;
+}
+
+export interface DiversificationResponse {
+  total_value_usd: number;
+  diversification: DiversificationItem[];
 }
 
 export interface HistoryPoint {
   timestamp: string;
-  total_value: number;
+  value_usd: number;
+}
+
+export interface HistoryResponse {
+  period_days: number;
+  data_points: number;
+  percent_change: number;
+  data: HistoryPoint[];
 }
 
 export const portfolioAPI = {
@@ -35,7 +59,7 @@ export const portfolioAPI = {
       const data = await fetchAPI<Asset[]>(`${API_BASE_URL}/portfolio/assets`);
       return data || [];
     } catch (error) {
-      console.error('Error fetching assets:', error);
+      console.error("Error fetching assets:", error);
       return [];
     }
   },
@@ -43,8 +67,8 @@ export const portfolioAPI = {
   // Add an asset
   addAsset: async (symbol: string, amount: number): Promise<Asset> => {
     const data = await fetchAPI<Asset>(`${API_BASE_URL}/portfolio/assets`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ symbol, amount }),
     });
     return data;
@@ -55,63 +79,72 @@ export const portfolioAPI = {
     try {
       const data = await fetchAPI<{ success: boolean }>(
         `${API_BASE_URL}/portfolio/assets/${assetId}`,
-        { method: 'DELETE' }
+        { method: "DELETE" },
       );
       return data || { success: true };
     } catch (error) {
-      console.error('Error deleting asset:', error);
+      console.error("Error deleting asset:", error);
       throw error;
     }
   },
 
   // Get portfolio valuation
   getValuation: async (
-    currency: string = 'USD'
+    currency: string = "USD",
   ): Promise<ValuationResponse> => {
     try {
       const data = await fetchAPI<ValuationResponse>(
-        `${API_BASE_URL}/portfolio/valuation?currency=${currency}`
+        `${API_BASE_URL}/portfolio/valuation?currency=${currency}`,
       );
       return (
         data || {
           total_value: 0,
           currency,
-          change_24h: 0,
+          assets: [],
+          last_updated: new Date().toISOString(),
         }
       );
     } catch (error) {
-      console.error('Error fetching valuation:', error);
+      console.error("Error fetching valuation:", error);
       return {
         total_value: 0,
         currency,
-        change_24h: 0,
+        assets: [],
+        last_updated: new Date().toISOString(),
       };
     }
   },
 
   // Get diversification
-  getDiversification: async (): Promise<DiversificationItem[]> => {
+  getDiversification: async (): Promise<DiversificationResponse> => {
     try {
-      const data = await fetchAPI<DiversificationItem[]>(
-        `${API_BASE_URL}/portfolio/diversification`
+      const data = await fetchAPI<DiversificationResponse>(
+        `${API_BASE_URL}/portfolio/diversification`,
       );
-      return data || [];
+      return data || { total_value_usd: 0, diversification: [] };
     } catch (error) {
-      console.error('Error fetching diversification:', error);
-      return [];
+      console.error("Error fetching diversification:", error);
+      return { total_value_usd: 0, diversification: [] };
     }
   },
 
   // Get history
-  getHistory: async (days: number = 7): Promise<HistoryPoint[]> => {
+  getHistory: async (days: number = 7): Promise<HistoryResponse> => {
     try {
-      const data = await fetchAPI<HistoryPoint[]>(
-        `${API_BASE_URL}/portfolio/history?days=${days}`
+      const data = await fetchAPI<HistoryResponse>(
+        `${API_BASE_URL}/portfolio/history?days=${days}`,
       );
-      return data || [];
+      return (
+        data || {
+          period_days: days,
+          data_points: 0,
+          percent_change: 0,
+          data: [],
+        }
+      );
     } catch (error) {
-      console.error('Error fetching history:', error);
-      return [];
+      console.error("Error fetching history:", error);
+      return { period_days: days, data_points: 0, percent_change: 0, data: [] };
     }
   },
 
@@ -119,7 +152,7 @@ export const portfolioAPI = {
   saveSnapshot: async (): Promise<{ success: boolean; message?: string }> => {
     const data = await fetchAPI<{ success: boolean; message?: string }>(
       `${API_BASE_URL}/portfolio/history/save`,
-      { method: 'POST' }
+      { method: "POST" },
     );
     return data || { success: true };
   },
