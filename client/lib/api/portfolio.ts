@@ -107,15 +107,15 @@ export const portfolioAPI = {
   },
 
   // Get diversification
-  getDiversification: async (): Promise<DiversificationItem[]> => {
+  getDiversification: async (): Promise<DiversificationResponse> => {
     try {
-      const data = await fetchAPI<DiversificationItem[]>(
+      const data = await fetchAPI<DiversificationResponse>(
         `${API_BASE_URL}/portfolio/diversification`
       );
-      return data || [];
+      return data || { total_value_usd: 0, diversification: [] };
     } catch (error) {
       console.error('Error fetching diversification:', error);
-      return [];
+      return { total_value_usd: 0, diversification: [] };
     }
   },
 
