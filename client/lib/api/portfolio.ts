@@ -32,7 +32,12 @@ export interface ValuationResponse {
 export interface DiversificationItem {
   symbol: string;
   percentage: number;
-  value: number;
+  value_usd: number;
+}
+
+export interface DiversificationResponse {
+  total_value_usd: number;
+  diversification: DiversificationItem[];
 }
 
 export interface HistoryPoint {
