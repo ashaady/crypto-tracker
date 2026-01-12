@@ -163,7 +163,7 @@ export default function Dashboard() {
         <ValueCard
           title="Total Portfolio Value"
           value={valuation ? `$${valuation.total_value.toLocaleString('en-US', { maximumFractionDigits: 2 })}` : '$0.00'}
-          change={valuation?.change_24h}
+          change={change24h}
           currency={selectedCurrency}
         />
         <div className="bg-card rounded-lg p-6 border border-border">
